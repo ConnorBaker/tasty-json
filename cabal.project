@@ -1,0 +1,14 @@
+packages:
+  ./tasty-json-markdown/tasty-json-markdown.cabal
+  ./tasty-json-reporter/tasty-json-reporter.cabal
+with-compiler: ghc-9.2.4
+jobs: $ncpus
+package tasty-json-markdown
+  ghc-options:
+    -Wall
+    -Werror
+
+package tasty-json-reporter
+  ghc-options:
+    -Wall
+    -Werror

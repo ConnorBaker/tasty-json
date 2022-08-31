@@ -1,0 +1,28 @@
+cabal-version: 2.4
+name:          tasty-json-reporter
+version:       0.1.0.0
+maintainer:    connorbaker01@gmail.com
+author:        Connor Baker
+
+library
+    exposed-modules:
+        Test.Tasty.Aeson.Options
+        Test.Tasty.Aeson.Orphans
+        Test.Tasty.Options.JSONMeta
+        Test.Tasty.Options.JSONPath
+        Test.Tasty.Runners.JSONReporter
+        Test.Tasty.Types.JSONTestResult
+        Test.Tasty.Types.JSONTestSuiteResult
+
+    hs-source-dirs:   .
+    default-language: Haskell2010
+    build-depends:
+        aeson,
+        base ^>=4.16.3.0,
+        bytestring,
+        containers,
+        stm,
+        tagged,
+        tasty,
+        text,
+        unordered-containers
