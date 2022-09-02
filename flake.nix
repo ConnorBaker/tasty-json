@@ -27,12 +27,8 @@
     haskell-language-server,
   }:
     flake-utils.lib.eachDefaultSystem (system: let
-      ghcName = "ghc924";
-      hls = haskell-language-server.packages.${system}.haskell-language-server-924;
-
       overlays = import ./nix/overlay-builders/overlays.nix {
-        inherit ghcName;
-        inherit (nixpkgs.legacyPackages.${system}.lib) composeManyExtensions;
+        pkgs = nixpkgs.legacyPackages.${system};
       };
 
       pkgs = import nixpkgs {
@@ -40,30 +36,32 @@
         overlays = [overlays.default];
       };
 
-      inherit (pkgs.haskell.packages.${ghcName}) shellFor tasty-json-reporter tasty-json-markdown;
-    in {
-      inherit overlays;
-      formatter = alejandra.packages.${system}.default;
+      inherit (pkgs.haskell.packages.ghc8107) shellFor tasty-json-reporter tasty-json-markdown;
+      hls = haskell-language-server.packages.${system}.default;
+    in
+      { 
+        inherit overlays;
+        formatter = alejandra.packages.${system}.default;
 
-      apps = {
-        update-flake = {
-          type = "app";
-          program = ./nix/scripts/update-flake.sh;
+        apps = {
+          update-flake = {
+            type = "app";
+            program = ./nix/scripts/update-flake.sh;
+          };
+          update-cabal = {
+            type = "app";
+            program = ./nix/scripts/update-cabal.sh;
+          };
         };
-        update-cabal = {
-          type = "app";
-          program = ./nix/scripts/update-cabal.sh;
+
+        packages = {
+          inherit tasty-json-reporter tasty-json-markdown;
+          default = tasty-json-reporter;
         };
-      };
 
-      packages = {
-        inherit tasty-json-reporter tasty-json-markdown;
-        default = tasty-json-reporter;
-      };
-
-      devShells.default = shellFor {
-        packages = ps: with ps; [tasty-json-reporter tasty-json-markdown];
-        buildInputs = [pkgs.cabal-install pkgs.cabal2nix hls];
-      };
-    });
+        devShells.default = shellFor {
+          packages = ps: with ps; [tasty-json-reporter tasty-json-markdown];
+          buildInputs = [pkgs.cabal-install pkgs.cabal2nix hls];
+        };
+      });    
 }
