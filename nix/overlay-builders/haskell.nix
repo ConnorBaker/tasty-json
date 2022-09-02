@@ -1,9 +1,16 @@
 {
   ghcName,
-  drv,
+  cabal2nixifiedDrvPath,
 }: final: prev: let
   haskellPkgs = prev.haskell.packages.${ghcName};
   inherit (prev.lib) recursiveUpdateUntil;
+  inherit (prev.haskell.lib.compose) dontCheck dontHaddock failOnAllWarnings;
+  inherit (prev.lib) pipe;
+
+  drv = pipe (haskellPkgs.callPackage cabal2nixifiedDrvPath {}) [
+    dontHaddock
+    dontCheck
+  ];
 
   new = {
     haskell.packages.${ghcName} = haskellPkgs.extend (_: _: {

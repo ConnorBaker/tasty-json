@@ -1,6 +1,8 @@
 {
   mkDerivation,
+  aeson,
   base,
+  bytestring,
   lib,
   tasty-json-reporter,
 }:
@@ -10,7 +12,12 @@ mkDerivation {
   src = ../../tasty-json-markdown;
   isLibrary = false;
   isExecutable = true;
-  executableHaskellDepends = [base tasty-json-reporter];
+  executableHaskellDepends = [
+    aeson
+    base
+    bytestring
+    tasty-json-reporter
+  ];
   license = "unknown";
   mainProgram = "tasty-json-markdown";
 }

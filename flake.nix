@@ -3,9 +3,11 @@
 
   nixConfig = {
     extra-substituters = [
+      "https://nix-community.cachix.org"
       "https://haskell-language-server.cachix.org"
     ];
     extra-trusted-public-keys = [
+      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
       "haskell-language-server.cachix.org-1:juFfHrwkOxqIOZShtC4YC1uT1bBcq2RSvC7OMKx0Nz8="
     ];
   };
@@ -13,7 +15,7 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
-    haskell-language-server.url = "github:haskell/haskell-language-server/7760340e999693d07fdbea49c9e20a3dd5458ad3";
+    haskell-language-server.url = "github:haskell/haskell-language-server/830596ee212d4f2fbbc81bcf5d08574ae96947d3";
     alejandra.url = "github:kamadorueda/alejandra";
   };
 
@@ -25,11 +27,9 @@
     haskell-language-server,
   }:
     flake-utils.lib.eachDefaultSystem (system: let
-      ghcVersion = "924";
-      ghcName = "ghc${ghcVersion}";
-      hls = haskell-language-server.packages.${system}."haskell-language-server-${ghcVersion}";
+      ghcName = "ghc924";
+      hls = haskell-language-server.packages.${system}.haskell-language-server-924;
 
-      formatter = alejandra.packages.${system}.default;
       overlays = import ./nix/overlay-builders/overlays.nix {
         inherit ghcName;
         inherit (nixpkgs.legacyPackages.${system}.lib) composeManyExtensions;
@@ -39,10 +39,22 @@
         inherit system;
         overlays = [overlays.default];
       };
-      haskellPkgs = pkgs.haskell.packages.${ghcName};
-      inherit (haskellPkgs) callPackage shellFor tasty-json-reporter tasty-json-markdown;
+
+      inherit (pkgs.haskell.packages.${ghcName}) shellFor tasty-json-reporter tasty-json-markdown;
     in {
-      inherit overlays formatter;
+      inherit overlays;
+      formatter = alejandra.packages.${system}.default;
+
+      apps = {
+        update-flake = {
+          type = "app";
+          program = ./nix/scripts/update-flake.sh;
+        };
+        update-cabal = {
+          type = "app";
+          program = ./nix/scripts/update-cabal.sh;
+        };
+      };
 
       packages = {
         inherit tasty-json-reporter tasty-json-markdown;
