@@ -42,7 +42,7 @@
         overlays = [overlays.default];
       };
 
-      inherit (pkgs.haskell.packages.ghc924) shellFor tasty-json-reporter tasty-json-markdown ormolu hlint apply-refact cabal-install cabal2nix;
+      inherit (pkgs.haskell.packages.ghc924) shellFor tasty-json-reporter tasty-json-markdown ormolu hlint cabal-install cabal2nix;
       inherit (pkgs.haskell.lib.compose) dontCheck dontHaddock;
       inherit (pkgs.lib) flip pipe;
       hls = haskell-language-server.packages.${system}.haskell-language-server-924;

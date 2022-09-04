@@ -2,19 +2,17 @@
   inherit (pkgs.lib) composeManyExtensions pipe;
   inherit (pkgs.haskell.lib.compose) dontCheck dontHaddock;
 
-  defaultBuilder = nixPath: ghcPackages:
-    pipe (ghcPackages.callPackage nixPath {}) [
-      dontCheck
-      dontHaddock
-    ];
-
-  tasty-json-reporter = import ./haskell.nix {
-    drvFn = defaultBuilder ../packages/tasty-json-reporter.nix;
-  };
-  tasty-json-markdown = import ./haskell.nix {
-    drvFn = defaultBuilder ../packages/tasty-json-markdown.nix;
-  };
-  default = composeManyExtensions [tasty-json-reporter tasty-json-markdown];
+  defaultBuilder = nixPath:
+    import ./haskell.nix {
+      drvFn = ghcPackages:
+        pipe (ghcPackages.callPackage nixPath {}) [
+          dontCheck
+          dontHaddock
+        ];
+    };
 in {
-  inherit tasty-json-reporter tasty-json-markdown default;
+  default = composeManyExtensions [
+    (defaultBuilder ../packages/tasty-json-reporter.nix)
+    (defaultBuilder ../packages/tasty-json-markdown.nix)
+  ];
 }

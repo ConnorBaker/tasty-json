@@ -1,4 +1,4 @@
-# Returns an overlay of nixpkgs where each package set for each GHC includes 
+# Returns an overlay of nixpkgs where each package set for each GHC includes
 # the given derivation.
 {
   drvFn, # :: GHCPackageSet -> Derivation
