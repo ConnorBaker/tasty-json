@@ -1,6 +1,6 @@
 {-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE InstanceSigs #-}
+{-# LANGUAGE TemplateHaskell #-}
 
 module Test.Tasty.Options.JSONMeta where
 
@@ -9,12 +9,12 @@ import Data.HashMap.Strict (HashMap)
 import qualified Data.HashMap.Strict as HM
 import Data.Tagged (Tagged (Tagged))
 import Data.Text.Lazy (Text, pack, split, unpack)
-import Test.Tasty.Aeson.Options (myOptions)
+import Test.Tasty.Aeson.Options (tastyJSONOptions)
 import Test.Tasty.Options (IsOption (defaultValue, optionHelp, optionName, parseValue))
 
-newtype JSONMeta = JSONMeta (HashMap String String)
+newtype JSONMeta = JSONMeta (HashMap String String) deriving (Eq, Show)
 
-$(deriveJSON myOptions ''JSONMeta)
+$(deriveJSON tastyJSONOptions ''JSONMeta)
 
 instance IsOption (Maybe JSONMeta) where
   defaultValue :: Maybe JSONMeta

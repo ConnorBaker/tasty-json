@@ -7,10 +7,12 @@ author:        Connor Baker
 library
     exposed-modules:
         Test.Tasty.Aeson.Options
-        Test.Tasty.Aeson.Orphans
         Test.Tasty.Options.JSONMeta
         Test.Tasty.Options.JSONPath
         Test.Tasty.Runners.JSONReporter
+        Test.Tasty.Types.JSONFailureReason
+        Test.Tasty.Types.JSONOutcome
+        Test.Tasty.Types.JSONResult
         Test.Tasty.Types.JSONTestResult
         Test.Tasty.Types.JSONTestSuiteResult
 

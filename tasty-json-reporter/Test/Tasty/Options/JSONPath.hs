@@ -6,7 +6,7 @@ module Test.Tasty.Options.JSONPath where
 import Data.Tagged (Tagged (Tagged))
 import Test.Tasty.Options (IsOption (defaultValue, optionHelp, optionName, parseValue))
 
-newtype JSONPath = JSONPath FilePath
+newtype JSONPath = JSONPath FilePath deriving (Eq, Show)
 
 instance IsOption (Maybe JSONPath) where
   defaultValue :: Maybe JSONPath

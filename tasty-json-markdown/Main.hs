@@ -5,7 +5,6 @@ module Main where
 
 import Data.Aeson (ToJSON (toJSON), eitherDecodeFileStrict')
 import System.Environment (getArgs)
-import Test.Tasty.Aeson.Orphans ()
 import Test.Tasty.Types.JSONTestSuiteResult (JSONTestSuiteResult (..))
 
 defaultMain :: String -> IO ()

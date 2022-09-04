@@ -4,10 +4,9 @@ module Test.Tasty.Types.JSONTestResult where
 
 import Data.Aeson.TH (deriveJSON)
 import Test.Tasty (TestName)
-import Test.Tasty.Aeson.Options (myOptions)
-import Test.Tasty.Aeson.Orphans ()
-import Test.Tasty.Runners (Result)
+import Test.Tasty.Aeson.Options (tastyJSONOptions)
+import Test.Tasty.Types.JSONResult (JSONResult)
 
-data JSONTestResult = JSONTestResult {path :: [TestName], result :: Result}
+data JSONTestResult = JSONTestResult {path :: [TestName], result :: JSONResult} deriving (Eq, Show)
 
-$(deriveJSON myOptions ''JSONTestResult)
+$(deriveJSON tastyJSONOptions ''JSONTestResult)

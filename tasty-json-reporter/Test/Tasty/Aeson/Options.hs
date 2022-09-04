@@ -1,6 +1,6 @@
-module Test.Tasty.Aeson.Options (myOptions) where
+module Test.Tasty.Aeson.Options (tastyJSONOptions) where
 
 import Data.Aeson (Options (..), defaultOptions)
 
-myOptions :: Options
-myOptions = defaultOptions {allNullaryToStringTag = False, omitNothingFields = True, tagSingleConstructors = True}
+tastyJSONOptions :: Options
+tastyJSONOptions = defaultOptions {allNullaryToStringTag = False, omitNothingFields = True, tagSingleConstructors = True}

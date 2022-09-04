@@ -21,14 +21,14 @@ import qualified Data.IntMap.Strict as IM
 import Data.Proxy (Proxy (Proxy))
 import System.IO (IOMode (WriteMode), withBinaryFile)
 import Test.Tasty (TestName, TestTree)
-import Test.Tasty.Aeson.Orphans ()
 import Test.Tasty.Ingredients (Ingredient (TestReporter), composeReporters)
 import Test.Tasty.Ingredients.ConsoleReporter (consoleTestReporter)
 import Test.Tasty.Options (OptionDescription (Option), OptionSet, lookupOption)
-import Test.Tasty.Options.JSONMeta
-import Test.Tasty.Options.JSONPath
+import Test.Tasty.Options.JSONMeta (JSONMeta (..))
+import Test.Tasty.Options.JSONPath (JSONPath (..))
 import Test.Tasty.Providers (IsTest)
 import Test.Tasty.Runners (NumThreads (getNumThreads), Result, Status (..), StatusMap, TreeFold (foldGroup, foldSingle), foldTestTree, resultSuccessful, trivialFold)
+import Test.Tasty.Types.JSONResult (fromResult)
 import Test.Tasty.Types.JSONTestResult (JSONTestResult (..))
 import Test.Tasty.Types.JSONTestSuiteResult (JSONTestSuiteResult (..))
 
@@ -69,7 +69,7 @@ jsonReporter = TestReporter [Option $ Proxy @(Maybe JSONPath), Option $ Proxy @(
         go (accSuccess, accResults) (idx, fullTestName) = do
           result <- awaitResult statusMap idx
           let !success = resultSuccessful result && accSuccess
-          let !results = JSONTestResult fullTestName result : accResults
+          let !results = JSONTestResult fullTestName (fromResult result) : accResults
           pure (success, results)
     (success, results) <- foldM go (True, []) tests
 
