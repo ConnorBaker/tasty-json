@@ -15,8 +15,14 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
-    haskell-language-server.url = "github:haskell/haskell-language-server/830596ee212d4f2fbbc81bcf5d08574ae96947d3";
-    alejandra.url = "github:kamadorueda/alejandra";
+    haskell-language-server = {
+      url = "github:haskell/haskell-language-server/830596ee212d4f2fbbc81bcf5d08574ae96947d3";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    alejandra = {
+      url = "github:kamadorueda/alejandra";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
@@ -36,32 +42,33 @@
         overlays = [overlays.default];
       };
 
-      inherit (pkgs.haskell.packages.ghc8107) shellFor tasty-json-reporter tasty-json-markdown;
-      hls = haskell-language-server.packages.${system}.default;
-    in
-      { 
-        inherit overlays;
-        formatter = alejandra.packages.${system}.default;
+      inherit (pkgs.haskell.packages.ghc924) shellFor tasty-json-reporter tasty-json-markdown ormolu hlint apply-refact cabal-install cabal2nix;
+      inherit (pkgs.haskell.lib.compose) dontCheck dontHaddock;
+      inherit (pkgs.lib) flip pipe;
+      hls = haskell-language-server.packages.${system}.haskell-language-server-924;
+    in {
+      inherit overlays;
+      formatter = alejandra.packages.${system}.default;
 
-        apps = {
-          update-flake = {
-            type = "app";
-            program = ./nix/scripts/update-flake.sh;
-          };
-          update-cabal = {
-            type = "app";
-            program = ./nix/scripts/update-cabal.sh;
-          };
+      apps = {
+        update-flake = {
+          type = "app";
+          program = ./nix/scripts/update-flake.sh;
         };
+        update-cabal = {
+          type = "app";
+          program = ./nix/scripts/update-cabal.sh;
+        };
+      };
 
-        packages = {
-          inherit tasty-json-reporter tasty-json-markdown;
-          default = tasty-json-reporter;
-        };
+      packages = {
+        inherit tasty-json-reporter tasty-json-markdown;
+        default = tasty-json-reporter;
+      };
 
-        devShells.default = shellFor {
-          packages = ps: with ps; [tasty-json-reporter tasty-json-markdown];
-          buildInputs = [pkgs.cabal-install pkgs.cabal2nix hls];
-        };
-      });    
+      devShells.default = shellFor {
+        packages = ps: with ps; [tasty-json-reporter tasty-json-markdown];
+        buildInputs = map (flip pipe [dontCheck dontHaddock]) [ormolu hlint cabal-install cabal2nix hls];
+      };
+    });
 }

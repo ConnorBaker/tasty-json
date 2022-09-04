@@ -1,21 +1,25 @@
+# Returns an overlay of nixpkgs where each package set for each GHC includes 
+# the given derivation.
 {
-  ghcName,
-  cabal2nixifiedDrvPath,
+  drvFn, # :: GHCPackageSet -> Derivation
 }: final: prev: let
-  haskellPkgs = prev.haskell.packages.${ghcName};
-  inherit (prev.lib) recursiveUpdateUntil;
-  inherit (prev.haskell.lib.compose) dontCheck dontHaddock failOnAllWarnings;
-  inherit (prev.lib) pipe;
-
-  drv = pipe (haskellPkgs.callPackage cabal2nixifiedDrvPath {}) [
-    dontHaddock
-    dontCheck
-  ];
+  inherit (prev.lib) mapAttrs recursiveUpdateUntil;
 
   new = {
-    haskell.packages.${ghcName} = haskellPkgs.extend (_: _: {
-      "${drv.pname}" = drv;
-    });
+    haskell.packages =
+      mapAttrs
+      (
+        ghcName: ghcPackages:
+          ghcPackages.extend
+          (
+            _: _: let
+              drv = drvFn ghcPackages;
+            in {
+              "${drv.pname}" = drv;
+            }
+          )
+      )
+      prev.haskell.packages;
   };
 in
-  recursiveUpdateUntil (path: l: r: path == ["haskell" "packages" ghcName]) prev new
+  recursiveUpdateUntil (path: _: _: path == ["haskell" "packages"]) prev new
