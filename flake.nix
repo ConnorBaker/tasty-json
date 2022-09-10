@@ -33,9 +33,7 @@
     haskell-language-server,
   }:
     flake-utils.lib.eachDefaultSystem (system: let
-      overlays = import ./nix/overlay-builders/overlays.nix {
-        pkgs = nixpkgs.legacyPackages.${system};
-      };
+      overlays = import ./nix/overlays.nix;
 
       pkgs = import nixpkgs {
         inherit system;
