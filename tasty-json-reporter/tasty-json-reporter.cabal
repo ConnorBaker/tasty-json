@@ -13,6 +13,7 @@ library
         Test.Tasty.Types.JSONFailureReason
         Test.Tasty.Types.JSONOutcome
         Test.Tasty.Types.JSONResult
+        Test.Tasty.Types.JSONTestPath
         Test.Tasty.Types.JSONTestResult
         Test.Tasty.Types.JSONTestSuiteResult
 

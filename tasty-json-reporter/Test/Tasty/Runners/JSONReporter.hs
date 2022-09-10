@@ -13,13 +13,10 @@ where
 
 import qualified Control.Concurrent.STM as STM
 import Control.Monad (foldM)
-import Data.Aeson (ToJSON (toEncoding), encodeFile, fromEncoding)
-import Data.ByteString.Builder (hPutBuilder)
+import Data.Aeson (encodeFile)
 import qualified Data.IntMap.Strict as IM
-import Data.List.NonEmpty (NonEmpty)
 import qualified Data.List.NonEmpty as NonEmpty
 import Data.Proxy (Proxy (Proxy))
-import System.IO (IOMode (WriteMode), withBinaryFile)
 import Test.Tasty (TestName, TestTree)
 import Test.Tasty.Ingredients (Ingredient (TestReporter), composeReporters)
 import Test.Tasty.Ingredients.ConsoleReporter (consoleTestReporter)
@@ -29,6 +26,7 @@ import Test.Tasty.Options.JSONPath (JSONPath (..))
 import Test.Tasty.Providers (IsTest)
 import Test.Tasty.Runners (NumThreads (getNumThreads), Result, Status (..), StatusMap, TreeFold (foldGroup, foldSingle), foldTestTree, resultSuccessful, trivialFold)
 import Test.Tasty.Types.JSONResult (fromResult)
+import Test.Tasty.Types.JSONTestPath (JSONTestPath (..))
 import Test.Tasty.Types.JSONTestResult (JSONTestResult (..))
 import Test.Tasty.Types.JSONTestSuiteResult (JSONTestSuiteResult (..))
 
@@ -42,7 +40,7 @@ awaitResult statusMap i = STM.atomically $
         _ -> STM.retry
 
 -- Produces a list of list of tests names, where each list starts with the outermost test group and proceeds inwards, to the innermost test.
-fullTestNames :: OptionSet -> TestTree -> [(NonEmpty TestName, TestName)]
+fullTestNames :: OptionSet -> TestTree -> [JSONTestPath]
 fullTestNames optionSet testTree = map splitNames testPath
   where
     fg :: OptionSet -> TestName -> [[TestName]] -> [[TestName]]
@@ -53,38 +51,38 @@ fullTestNames optionSet testTree = map splitNames testPath
     testPath :: [[TestName]]
     testPath = foldTestTree trivialFold {foldSingle = fs, foldGroup = fg} optionSet testTree
 
-    splitNames :: [TestName] -> (NonEmpty TestName, TestName)
+    splitNames :: [TestName] -> JSONTestPath
     splitNames = \case
       [] -> error "Empty list of test names"
       [name] -> error $ "Test " ++ name ++ " has no parent group"
-      names -> ((NonEmpty.fromList . init) names, last names)
+      names -> JSONTestPath {group = (NonEmpty.fromList . init) names, name = last names}
 
 jsonReporter :: Ingredient
 jsonReporter = TestReporter [Option $ Proxy @(Maybe JSONPath), Option $ Proxy @(Maybe JSONMeta)] $ \options tree -> do
-  JSONPath path <- lookupOption options
+  JSONPath filePath <- lookupOption options
   meta@(JSONMeta _) <- lookupOption options
   Just $ \statusMap -> do
     let numThreads :: Int
         numThreads = getNumThreads $ lookupOption options
 
         -- The test number in the status map corresponds to the list of test group names to locate that test.
-        tests :: [(Int, (NonEmpty TestName, TestName))]
+        tests :: [(Int, JSONTestPath)]
         tests = zip [0 ..] $ fullTestNames options tree
 
         testCount :: Int
         testCount = length tests
 
-        go :: (Bool, [JSONTestResult]) -> (Int, (NonEmpty TestName, TestName)) -> IO (Bool, [JSONTestResult])
-        go (accSuccess, accResults) (idx, (group, name)) = do
+        go :: (Bool, [JSONTestResult]) -> (Int, JSONTestPath) -> IO (Bool, [JSONTestResult])
+        go (accSuccess, accResults) (idx, testPath) = do
           result <- awaitResult statusMap idx
           let !success = resultSuccessful result && accSuccess
-          let !results = JSONTestResult group name (fromResult result) : accResults
+          let !results = JSONTestResult testPath (fromResult result) : accResults
           pure (success, results)
     (success, results) <- foldM go (True, []) tests
 
     return $ \time ->
       success <$ do
-        encodeFile path $ JSONTestSuiteResult {results, time, success, meta, numThreads, testCount}
+        encodeFile filePath $ JSONTestSuiteResult {results, time, success, meta, numThreads, testCount}
 
 consoleAndJsonReporter :: Ingredient
 consoleAndJsonReporter = composeReporters consoleTestReporter jsonReporter
