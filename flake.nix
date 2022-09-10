@@ -16,7 +16,7 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
     haskell-language-server = {
-      url = "github:haskell/haskell-language-server/830596ee212d4f2fbbc81bcf5d08574ae96947d3";
+      url = "github:haskell/haskell-language-server/aad896cdc5b4869dc781e9b1eade8f3b14148f7c";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     alejandra = {
