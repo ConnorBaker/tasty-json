@@ -8,8 +8,12 @@ executable tasty-json-markdown
     main-is:          Main.hs
     hs-source-dirs:   .
     default-language: Haskell2010
+    other-modules:
+        MarkdownTable
     build-depends:
         aeson,
         base,
         bytestring,
-        tasty-json-reporter
+        tasty,
+        tasty-json-reporter,
+        unordered-containers
