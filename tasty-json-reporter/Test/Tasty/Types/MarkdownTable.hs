@@ -2,7 +2,7 @@
 {-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE OverloadedRecordDot #-}
 
-module MarkdownTable where
+module Test.Tasty.Types.MarkdownTable where
 
 import Data.Bool (bool)
 import Data.List.NonEmpty (NonEmpty)

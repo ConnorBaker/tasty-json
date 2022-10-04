@@ -23,6 +23,7 @@ import Test.Tasty.Ingredients.ConsoleReporter (consoleTestReporter)
 import Test.Tasty.Options (OptionDescription (Option), OptionSet, lookupOption)
 import Test.Tasty.Options.JSONMeta (JSONMeta (..))
 import Test.Tasty.Options.JSONPath (JSONPath (..))
+import Test.Tasty.Options.MarkdownOutput (MarkdownOutput (..))
 import Test.Tasty.Providers (IsTest)
 import Test.Tasty.Runners (NumThreads (getNumThreads), Result, Status (..), StatusMap, TreeFold (foldGroup, foldSingle), foldTestTree, resultSuccessful, trivialFold)
 import Test.Tasty.Types.JSONResult (fromResult)
@@ -61,6 +62,7 @@ jsonReporter :: Ingredient
 jsonReporter = TestReporter [Option $ Proxy @(Maybe JSONPath), Option $ Proxy @(Maybe JSONMeta)] $ \options tree -> do
   JSONPath filePath <- lookupOption options
   meta@(JSONMeta _) <- lookupOption options
+  MarkdownOutput markdownOutput <- lookupOption options
   Just $ \statusMap -> do
     let numThreads :: Int
         numThreads = getNumThreads $ lookupOption options

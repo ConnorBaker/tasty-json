@@ -33,9 +33,9 @@
     alejandra,
   }:
     hix.lib.auto ({lib, ...}: {
-      output.systems = [ "aarch64-darwin" ];
-      compat.enable = true;
-      shell.hls.package = haskell-language-server.packages.aarch64-darwin.haskell-language-server-924;
+      # output.systems = [ "aarch64-darwin" ];
+      # compat.enable = true;
+      # shell.hls.package = haskell-language-server.packages.aarch64-darwin.haskell-language-server-924;
       packages = {
         tasty-json-reporter = {
           src = ./tasty-json-reporter;
