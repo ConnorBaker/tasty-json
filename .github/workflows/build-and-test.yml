@@ -1,7 +1,13 @@
 name: Build and Test
+
 on:
-  push:
-  pull_request:
+  - push
+  - pull_request
+  - workflow_dispatch
+
+defaults:
+  run:
+    shell: bash
 
 jobs:
   # TODO: Add a linting/formatting job to run in parallel
@@ -9,9 +15,6 @@ jobs:
     # Develop caches the latest development environment for us
     name: develop
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash
     steps:
       - uses: actions/checkout@v3
 
@@ -35,9 +38,6 @@ jobs:
     name: build-and-test
     runs-on: ubuntu-latest
     needs: develop
-    defaults:
-      run:
-        shell: bash
     steps:
       - uses: actions/checkout@v3
 
