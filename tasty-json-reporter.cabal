@@ -1,0 +1,72 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.34.7.
+--
+-- see: https://github.com/sol/hpack
+
+name:           tasty-json-reporter
+version:        0.0.0
+synopsis:       A Tasty reporter that outputs JSON or Markdown
+description:    This package provides a Tasty reporter that outputs JSON or Markdown.
+                It is intended to be used with the [Tasty](https://hackage.haskell.org/package/tasty) test framework.
+category:       Development
+homepage:       https://github.com/connorbaker/tasty-json-reporter#readme
+bug-reports:    https://github.com/connorbaker/tasty-json-reporter/issues
+maintainer:     Connor Baker <connorbaker01@gmail.com>
+build-type:     Simple
+extra-source-files:
+    CHANGELOG.md
+
+source-repository head
+  type: git
+  location: https://github.com/connorbaker/tasty-json-reporter
+
+library
+  exposed-modules:
+      Test.Tasty.Aeson.Options
+      Test.Tasty.Options.JSONMeta
+      Test.Tasty.Options.JSONPath
+      Test.Tasty.Options.MarkdownPath
+      Test.Tasty.Runners.JSONReporter
+      Test.Tasty.Types.JSONFailureReason
+      Test.Tasty.Types.JSONOutcome
+      Test.Tasty.Types.JSONResult
+      Test.Tasty.Types.JSONTestPath
+      Test.Tasty.Types.JSONTestResult
+      Test.Tasty.Types.JSONTestSuiteResult
+      Test.Tasty.Types.MarkdownTable
+  other-modules:
+      Paths_tasty_json_reporter
+  hs-source-dirs:
+      tasty-json-reporter
+  ghc-options: -Wall
+  build-depends:
+      aeson
+    , base >=4.9 && <5
+    , bytestring
+    , containers
+    , optparse-applicative
+    , stm
+    , tagged
+    , tasty
+    , text
+    , unordered-containers
+  default-language: Haskell2010
+
+test-suite tasty-json-reporter-test
+  type: exitcode-stdio-1.0
+  main-is: Main.hs
+  other-modules:
+      Paths_tasty_json_reporter
+  hs-source-dirs:
+      tests
+  ghc-options: -Wall
+  build-depends:
+      aeson
+    , base >=4.9 && <5
+    , bytestring
+    , tasty
+    , tasty-hunit
+    , tasty-json-reporter
+    , text
+  default-language: Haskell2010

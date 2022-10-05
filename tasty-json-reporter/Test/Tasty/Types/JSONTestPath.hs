@@ -1,5 +1,5 @@
 {-# LANGUAGE InstanceSigs #-}
-{-# LANGUAGE OverloadedRecordDot #-}
+{-# LANGUAGE NamedFieldPuns #-}
 {-# LANGUAGE TemplateHaskell #-}
 
 module Test.Tasty.Types.JSONTestPath where
@@ -13,10 +13,10 @@ data JSONTestPath = JSONTestPath
   { group :: NonEmpty TestName,
     name :: TestName
   }
-  deriving (Eq)
+  deriving (Eq, Ord)
 
 instance Show JSONTestPath where
   show :: JSONTestPath -> String
-  show jtp = foldr (\a b -> a <> "." <> b) jtp.name jtp.group
+  show JSONTestPath {group, name} = foldr (\a b -> a <> "." <> b) name group
 
 $(deriveJSON tastyJSONOptions ''JSONTestPath)
