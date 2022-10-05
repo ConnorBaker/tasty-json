@@ -13,11 +13,10 @@
   }:
     hix.lib.flake ({ 
       base = ./.;
-      output.systems = ["x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin"]; 
+      output.systems = ["aarch64-darwin"]; 
       devGhc.compiler = "ghc902";
-      packages.tasty-json-reporter = ./.;
-      overrides.all = {notest, ...}: {
-        tasty-json-reporter = notest;
-      };
+      main = "tasty-json-reporter";
+      packages.tasty-json-reporter = ./tasty-json-reporter;
+      packages.tasty-json-reporter-test = ./tasty-json-reporter-test;
     });
 }

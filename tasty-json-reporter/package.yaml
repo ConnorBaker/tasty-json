@@ -6,10 +6,8 @@ description: |
   This package provides a Tasty reporter that outputs JSON or Markdown.
   It is intended to be used with the [Tasty](https://hackage.haskell.org/package/tasty) test framework.
 maintainer: Connor Baker <connorbaker01@gmail.com>
-github: connorbaker/tasty-json-reporter
+github: connorbaker/tasty-json
 category: Development
-extra-source-files:
-  - CHANGELOG.md
 
 ghc-options: -Wall
 
@@ -17,22 +15,13 @@ dependencies:
   - aeson
   - base >= 4.9 && < 5
   - bytestring
+  - containers
+  - optparse-applicative
+  - stm
+  - tagged
   - tasty
   - text
+  - unordered-containers
 
 library:
-  source-dirs: tasty-json-reporter
-  dependencies:
-    - containers
-    - optparse-applicative
-    - stm
-    - tagged
-    - unordered-containers
-
-tests:
-  tasty-json-reporter-test:
-    main: Main.hs
-    source-dirs: tests
-    dependencies:
-      - tasty-hunit
-      - tasty-json-reporter
+  source-dirs: .

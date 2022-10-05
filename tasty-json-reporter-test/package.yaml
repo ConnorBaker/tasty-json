@@ -1,0 +1,23 @@
+spec-version: 0.34.2
+name: tasty-json-reporter-test
+version: 0.0.0
+synopsis: A tester for a tasty reporter that outputs JSON or Markdown
+maintainer: Connor Baker <connorbaker01@gmail.com>
+github: connorbaker/tasty-json
+category: Testing
+
+ghc-options: -Wall
+
+dependencies:
+  - aeson
+  - base >= 4.9 && < 5
+  - bytestring
+  - tasty
+  - tasty-hunit
+  - tasty-json-reporter
+  - text
+
+executables:
+  tasty-json-reporter-test:
+    main: Main.hs
+    source-dirs: .

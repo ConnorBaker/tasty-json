@@ -58,8 +58,14 @@ jobs:
       - name: Cache library tasty-json-reporter
         run: cachix --verbose push --omit-deriver --compression-level 9 haskell-library-tasty-json ./result
 
+      - name: Build library tasty-json-reporter-test
+        run: nix -L build .#tasty-json-reporter-test
+
+      - name: Cache test suite tasty-json-reporter-test
+        run: cachix --verbose push --omit-deriver --compression-level 9 haskell-library-tasty-json ./result
+
       # Test
-      - name: Build and run tasty-json-reporter-test
+      - name: Run tasty-json-reporter-test
         run: |
           nix -L develop --command -- cabal run tasty-json-reporter-test -- --json-path out.json --markdown-path out.md;
           echo '# Job Summary\n' >> $GITHUB_STEP_SUMMARY;
