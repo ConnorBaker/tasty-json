@@ -1,0 +1,35 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.34.7.
+--
+-- see: https://github.com/sol/hpack
+
+name:           tasty-json-reporter-test
+version:        0.0.0
+synopsis:       A tester for a tasty reporter that outputs JSON or Markdown
+category:       Testing
+homepage:       https://github.com/connorbaker/tasty-json#readme
+bug-reports:    https://github.com/connorbaker/tasty-json/issues
+maintainer:     Connor Baker <connorbaker01@gmail.com>
+build-type:     Simple
+
+source-repository head
+  type: git
+  location: https://github.com/connorbaker/tasty-json
+
+executable tasty-json-reporter-test
+  main-is: Main.hs
+  other-modules:
+      Paths_tasty_json_reporter_test
+  hs-source-dirs:
+      ./
+  ghc-options: -Wall
+  build-depends:
+      aeson
+    , base >=4.9 && <5
+    , bytestring
+    , tasty
+    , tasty-hunit
+    , tasty-json-reporter
+    , text
+  default-language: Haskell2010

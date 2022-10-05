@@ -65,10 +65,9 @@ jobs:
         run: cachix --verbose push --omit-deriver --compression-level 9 haskell-library-tasty-json ./result
 
       # Test
+      # TODO: Archive results from test
       - name: Run tasty-json-reporter-test
         run: |
-          nix -L develop --command -- cabal run tasty-json-reporter-test -- --json-path out.json --markdown-path out.md;
-          echo '# Job Summary\n' >> $GITHUB_STEP_SUMMARY;
-          cat out.md >> $GITHUB_STEP_SUMMARY;
+          ./result/bin/tasty-json-reporter-test --json-path out.json --markdown-path out.md || cat out.md >> $GITHUB_STEP_SUMMARY;
           cat out.json | jq;
           [[ $(cat out.json | jq .success) = "true" ]]
