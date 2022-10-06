@@ -19,12 +19,13 @@ import qualified Data.List.NonEmpty as NonEmpty
 import Data.Proxy (Proxy (Proxy))
 import Test.Tasty (TestName, TestTree)
 import Test.Tasty.Ingredients (Ingredient (TestReporter), composeReporters)
+import Test.Tasty.Ingredients.ConsoleReporter (consoleTestReporter)
 import Test.Tasty.Options (OptionDescription (Option), OptionSet, lookupOption)
 import Test.Tasty.Options.JSONMeta (JSONMeta (..))
 import Test.Tasty.Options.JSONPath (JSONPath (..))
+import Test.Tasty.Options.MarkdownHeaderDepth (MarkdownHeaderDepth (..))
 import Test.Tasty.Options.MarkdownPath (MarkdownPath (..))
 import Test.Tasty.Providers (IsTest)
-import Test.Tasty.Ingredients.ConsoleReporter (consoleTestReporter)
 import Test.Tasty.Runners (NumThreads (getNumThreads), Result, Status (..), StatusMap, TreeFold (foldGroup, foldSingle), foldTestTree, resultSuccessful, trivialFold)
 import Test.Tasty.Types.JSONResult as JSONResult (fromResult)
 import Test.Tasty.Types.JSONTestPath as JSONTestPath
@@ -95,8 +96,9 @@ jsonReporter = TestReporter [Option $ Proxy @(Maybe JSONPath), Option $ Proxy @(
         encodeFile filePath jsonRepresentation
 
 markdownReporter :: Ingredient
-markdownReporter = TestReporter [Option $ Proxy @(Maybe MarkdownPath), Option $ Proxy @(Maybe JSONMeta)] $ \options tree -> do
+markdownReporter = TestReporter [Option $ Proxy @(Maybe MarkdownPath), Option $ Proxy @(Maybe MarkdownHeaderDepth), Option $ Proxy @(Maybe JSONMeta)] $ \options tree -> do
   MarkdownPath filePath <- lookupOption options
+  MarkdownHeaderDepth markdownHeaderDepth <- lookupOption options
   meta@(JSONMeta _) <- lookupOption options
   let numThreads = getNumThreads $ lookupOption options
   Just $ \statusMap -> do
@@ -105,7 +107,7 @@ markdownReporter = TestReporter [Option $ Proxy @(Maybe MarkdownPath), Option $ 
     pure $ \time -> do
       let jsonRepresentation = JSONTestSuiteResult results time success numThreads testCount meta
       success <$ do
-        writeFile filePath $ show $ MarkdownTable.fromJSONTestSuiteResult jsonRepresentation
+        writeFile filePath $ show $ MarkdownTable.fromJSONTestSuiteResult markdownHeaderDepth jsonRepresentation
 
 reporters :: Ingredient
 reporters = composeReporters consoleTestReporter $ composeReporters markdownReporter jsonReporter

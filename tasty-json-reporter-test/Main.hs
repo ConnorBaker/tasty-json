@@ -1,8 +1,8 @@
 module Main where
 
 import Test.Tasty (defaultMainWithIngredients, testGroup)
-import Test.Tasty.Ingredients.ConsoleReporter (consoleTestReporter)
 import Test.Tasty.HUnit (assertEqual, testCase)
+import Test.Tasty.Ingredients.ConsoleReporter (consoleTestReporter)
 import Test.Tasty.Runners.JSONReporter (reporters)
 
 main :: IO ()

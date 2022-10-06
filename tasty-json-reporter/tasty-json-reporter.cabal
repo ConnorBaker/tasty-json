@@ -24,6 +24,7 @@ library
       Test.Tasty.Aeson.Options
       Test.Tasty.Options.JSONMeta
       Test.Tasty.Options.JSONPath
+      Test.Tasty.Options.MarkdownHeaderDepth
       Test.Tasty.Options.MarkdownPath
       Test.Tasty.Runners.JSONReporter
       Test.Tasty.Types.JSONFailureReason
