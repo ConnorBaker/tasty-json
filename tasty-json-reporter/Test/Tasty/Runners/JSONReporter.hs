@@ -24,6 +24,7 @@ import Test.Tasty.Options.JSONMeta (JSONMeta (..))
 import Test.Tasty.Options.JSONPath (JSONPath (..))
 import Test.Tasty.Options.MarkdownPath (MarkdownPath (..))
 import Test.Tasty.Providers (IsTest)
+import Test.Tasty.Ingredients.ConsoleReporter (consoleTestReporter)
 import Test.Tasty.Runners (NumThreads (getNumThreads), Result, Status (..), StatusMap, TreeFold (foldGroup, foldSingle), foldTestTree, resultSuccessful, trivialFold)
 import Test.Tasty.Types.JSONResult as JSONResult (fromResult)
 import Test.Tasty.Types.JSONTestPath as JSONTestPath
@@ -107,4 +108,4 @@ markdownReporter = TestReporter [Option $ Proxy @(Maybe MarkdownPath), Option $ 
         writeFile filePath $ show $ MarkdownTable.fromJSONTestSuiteResult jsonRepresentation
 
 reporters :: Ingredient
-reporters = composeReporters markdownReporter jsonReporter
+reporters = composeReporters consoleTestReporter $ composeReporters markdownReporter jsonReporter
